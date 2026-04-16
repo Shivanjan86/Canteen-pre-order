@@ -27,8 +27,12 @@ public class OrderFacade {
         return orderService.getCustomerOrders(customerId);
     }
 
-    public Order cancelOrder(int orderId, int userId) {
-        return orderCommandInvoker.execute(new CancelOrderCommand(orderService, orderId, userId));
+    public Order cancelOrder(int orderId, String currentUserEmail) {
+        return orderCommandInvoker.execute(new CancelOrderCommand(orderService, orderId, currentUserEmail));
+    }
+
+    public Order markOrderReceived(int orderId, String currentUserEmail) {
+        return orderService.markOrderReceived(orderId, currentUserEmail);
     }
 
     public Order updateOrderStatus(int orderId, String status) {

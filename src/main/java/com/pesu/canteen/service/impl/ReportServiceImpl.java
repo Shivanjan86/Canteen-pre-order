@@ -26,6 +26,7 @@ public class ReportServiceImpl implements ReportService {
         long placed = orders.stream().filter(o -> "PLACED".equalsIgnoreCase(o.getStatus())).count();
         long preparing = orders.stream().filter(o -> "PREPARING".equalsIgnoreCase(o.getStatus())).count();
         long ready = orders.stream().filter(o -> "READY".equalsIgnoreCase(o.getStatus())).count();
+        long pickedUp = orders.stream().filter(o -> "PICKED_UP".equalsIgnoreCase(o.getStatus())).count();
         long cancelled = orders.stream().filter(o -> "CANCELLED".equalsIgnoreCase(o.getStatus())).count();
 
         double revenue = orders.stream()
@@ -52,6 +53,7 @@ public class ReportServiceImpl implements ReportService {
         dto.setPlacedOrders(placed);
         dto.setPreparingOrders(preparing);
         dto.setReadyOrders(ready);
+        dto.setPickedUpOrders(pickedUp);
         dto.setCancelledOrders(cancelled);
         dto.setTotalRevenue(revenue);
         dto.setTopItems(topItems);

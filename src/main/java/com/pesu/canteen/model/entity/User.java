@@ -23,6 +23,10 @@ public class User {
 
     private String password;
 
+    // Read-only view of JPA discriminator to resolve role consistently.
+    @Column(name = "role", insertable = false, updatable = false)
+    private String role;
+
     // Default constructor required by Hibernate
     public User() {
     }
@@ -66,5 +70,9 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRole() {
+        return role;
     }
 }

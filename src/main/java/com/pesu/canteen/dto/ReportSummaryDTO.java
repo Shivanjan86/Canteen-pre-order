@@ -8,6 +8,7 @@ public class ReportSummaryDTO {
     private long placedOrders;
     private long preparingOrders;
     private long readyOrders;
+    private long pickedUpOrders;
     private long cancelledOrders;
     private double totalRevenue;
     private List<String> topItems;
@@ -42,6 +43,14 @@ public class ReportSummaryDTO {
 
     public void setReadyOrders(long readyOrders) {
         this.readyOrders = readyOrders;
+    }
+
+    public long getPickedUpOrders() {
+        return pickedUpOrders;
+    }
+
+    public void setPickedUpOrders(long pickedUpOrders) {
+        this.pickedUpOrders = pickedUpOrders;
     }
 
     public long getCancelledOrders() {

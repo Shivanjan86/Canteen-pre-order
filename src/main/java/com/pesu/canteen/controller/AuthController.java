@@ -45,13 +45,20 @@ public class AuthController {
         dto.setName(user.getName());
         dto.setEmail(user.getEmail());
 
-        if (user instanceof Admin) {
-            dto.setRole("ADMIN");
+        String role = "CUSTOMER";
+        String persistedRole = user.getRole();
+        if (persistedRole != null && !persistedRole.isBlank()) {
+            String normalizedRole = persistedRole.trim().toUpperCase();
+            if ("ADMIN".equals(normalizedRole) || "STAFF".equals(normalizedRole)) {
+                role = normalizedRole;
+            }
+        } else if (user instanceof Admin) {
+            role = "ADMIN";
         } else if (user instanceof Staff) {
-            dto.setRole("STAFF");
-        } else {
-            dto.setRole("CUSTOMER");
+            role = "STAFF";
         }
+
+        dto.setRole(role);
 
         return dto;
     }

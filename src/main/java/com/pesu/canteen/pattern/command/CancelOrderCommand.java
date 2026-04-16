@@ -7,16 +7,16 @@ public class CancelOrderCommand implements OrderCommand {
 
     private final OrderService orderService;
     private final int orderId;
-    private final int userId;
+    private final String currentUserEmail;
 
-    public CancelOrderCommand(OrderService orderService, int orderId, int userId) {
+    public CancelOrderCommand(OrderService orderService, int orderId, String currentUserEmail) {
         this.orderService = orderService;
         this.orderId = orderId;
-        this.userId = userId;
+        this.currentUserEmail = currentUserEmail;
     }
 
     @Override
     public Order execute() {
-        return orderService.cancelOrder(orderId, userId);
+        return orderService.cancelOrder(orderId, currentUserEmail);
     }
 }

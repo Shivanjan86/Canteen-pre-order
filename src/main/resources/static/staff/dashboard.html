@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -36,7 +37,7 @@
     <section class="card wide">
         <h2>Customer Orders</h2>
         <form id="fetchOrdersForm" class="inline-form">
-            <input name="customerId" type="number" min="1" placeholder="Customer ID" required>
+            <input name="customerEmail" type="email" placeholder="Customer Email (Gmail)" required>
             <button type="submit">Fetch Orders</button>
         </form>
         <div id="orderList" class="list"></div>

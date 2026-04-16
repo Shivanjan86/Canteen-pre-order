@@ -33,6 +33,17 @@ public class CanteenUserDetailsService implements UserDetailsService {
     }
 
     private String resolveRole(User user) {
+        String persistedRole = user.getRole();
+        if (persistedRole != null && !persistedRole.isBlank()) {
+            String normalizedRole = persistedRole.trim().toUpperCase();
+            if ("ADMIN".equals(normalizedRole) || "STAFF".equals(normalizedRole)) {
+                return normalizedRole;
+            }
+            if ("CUSTOMER".equals(normalizedRole) || "USER".equals(normalizedRole)) {
+                return "CUSTOMER";
+            }
+        }
+
         if (user instanceof Admin) {
             return "ADMIN";
         }

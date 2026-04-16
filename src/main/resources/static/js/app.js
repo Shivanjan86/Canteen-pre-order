@@ -1,6 +1,10 @@
 const CART_KEY = "canteenCart";
 const SLOT_KEY = "canteenSlot";
 const SESSION_KEY = "canteenSession";
+const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 30;
+
+// Auth session must be per-tab so different roles can stay logged in across tabs.
+localStorage.removeItem(SESSION_KEY);
 
 const el = (id) => document.getElementById(id);
 
@@ -13,21 +17,56 @@ function showToast(message) {
 }
 
 function saveSession(session) {
-    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    const now = Date.now();
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+        ...session,
+        _issuedAt: now,
+        _expiresAt: now + SESSION_TTL_MS
+    }));
+}
+
+function isSessionExpired(session) {
+    if (!session || !session._expiresAt) return false;
+    return Date.now() > Number(session._expiresAt);
+}
+
+function refreshSession(session) {
+    if (!session) return null;
+    saveSession(session);
+    return getSession();
 }
 
 function getSession() {
-    const raw = localStorage.getItem(SESSION_KEY);
-    return raw ? JSON.parse(raw) : null;
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+
+    try {
+        const parsed = JSON.parse(raw);
+        if (isSessionExpired(parsed)) {
+            clearSession();
+            return null;
+        }
+
+        if (!parsed._expiresAt) {
+            return refreshSession(parsed);
+        }
+
+        return parsed;
+    } catch (e) {
+        clearSession();
+        return null;
+    }
 }
 
 function clearSession() {
+    sessionStorage.removeItem(SESSION_KEY);
     localStorage.removeItem(SESSION_KEY);
 }
 
 function authHeader() {
     const s = getSession();
     if (!s) return null;
+    refreshSession(s);
     return "Basic " + btoa(`${s.email}:${s.password}`);
 }
 
@@ -45,7 +84,18 @@ async function api(path, options = {}) {
     }
 
     if (!response.ok) {
+        if (response.status === 401) {
+            clearSession();
+            if (!window.location.pathname.endsWith("/index.html")) {
+                window.location.href = "/index.html";
+            }
+        }
         throw new Error(typeof body === "string" ? body : JSON.stringify(body));
+    }
+
+    const currentSession = getSession();
+    if (currentSession) {
+        refreshSession(currentSession);
     }
 
     return body;

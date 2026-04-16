@@ -23,7 +23,7 @@ el("fetchOrdersForm").addEventListener("submit", async (e) => {
     const data = Object.fromEntries(new FormData(e.target).entries());
 
     try {
-        const orders = await api(`/api/orders/customer/${Number(data.customerId)}`, { method: "GET" });
+        const orders = await api(`/api/orders/customer/by-email?email=${encodeURIComponent(data.customerEmail)}`, { method: "GET" });
         const list = el("orderList");
         list.innerHTML = "";
 
@@ -35,7 +35,7 @@ el("fetchOrdersForm").addEventListener("submit", async (e) => {
         });
 
         if (!orders.length) {
-            list.innerHTML = '<div class="item">No orders found for this customer.</div>';
+            list.innerHTML = '<div class="item">No orders found for this email.</div>';
         }
     } catch (err) {
         showToast(err.message);

@@ -1,6 +1,35 @@
 const loginForm = el("loginForm");
 const registerForm = el("registerForm");
 
+const authTabs = document.querySelectorAll(".auth-tab");
+const authPanels = document.querySelectorAll(".auth-panel");
+const authLinks = document.querySelectorAll("[data-switch-target]");
+
+function showAuthPanel(targetId) {
+    authTabs.forEach((tab) => {
+        const isActive = tab.dataset.target === targetId;
+        tab.classList.toggle("active", isActive);
+        tab.setAttribute("aria-selected", String(isActive));
+    });
+
+    authPanels.forEach((panel) => {
+        panel.classList.toggle("active", panel.id === targetId);
+    });
+}
+
+authTabs.forEach((tab) => {
+    tab.addEventListener("click", () => showAuthPanel(tab.dataset.target));
+});
+
+authLinks.forEach((link) => {
+    link.addEventListener("click", (event) => {
+        event.preventDefault();
+        showAuthPanel(link.dataset.switchTarget);
+    });
+});
+
+showAuthPanel("login-panel");
+
 loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(loginForm).entries());

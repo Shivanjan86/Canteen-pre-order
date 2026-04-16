@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Canteen icon">
+  <rect width="64" height="64" rx="16" fill="#b14a2b"/>
+  <path d="M18 24h28l-2 22H20z" fill="#fffdfa"/>
+  <path d="M22 24c0-6 4.5-10 10-10s10 4 10 10" fill="none" stroke="#1f6f78" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="26" cy="38" r="2.8" fill="#1f2430"/>
+  <circle cx="38" cy="38" r="2.8" fill="#1f2430"/>
+</svg>

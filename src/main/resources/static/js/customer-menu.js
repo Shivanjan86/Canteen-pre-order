@@ -24,6 +24,7 @@ async function loadSlots() {
         }
 
         setSlot(slotSelect.value);
+        slotSelect.title = "Choose a 15-minute pickup window";
     } catch (err) {
         showToast(err.message);
     }

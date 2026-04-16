@@ -5,14 +5,59 @@ if (!session) {
 
 async function loadOrders() {
     try {
-        const orders = await api(`/api/orders/customer/${session.id}`, { method: "GET" });
+        const orders = await api("/api/orders/my", { method: "GET" });
         const list = el("orderList");
         list.innerHTML = "";
 
         orders.forEach((order) => {
             const row = document.createElement("div");
             row.className = "item";
-            row.innerHTML = `<strong>Order #${order.id}</strong><br>Status: ${order.status}<br>Slot: ${order.pickupSlot || "-"}<br>Time: ${order.orderTime}`;
+            const statusNote = order.status === "READY"
+                ? "Ready for pickup. You can collect it anytime during your slot."
+                : order.status === "PICKED_UP"
+                    ? "Collected by customer."
+                    : order.status === "EXPIRED"
+                        ? "Pickup window missed. Please place a new order."
+                    : "";
+
+            row.innerHTML = `<strong>Order #${order.id}</strong><br>Status: ${order.status}<br>${statusNote ? `Note: ${statusNote}<br>` : ""}Slot: ${order.pickupSlot || "-"}<br>Time: ${order.orderTime}`;
+
+            if (order.status === "PLACED") {
+                const cancelBtn = document.createElement("button");
+                cancelBtn.textContent = "Cancel Order";
+                cancelBtn.addEventListener("click", async () => {
+                    try {
+                        await api(`/api/orders/${order.id}/cancel`, {
+                            method: "PUT"
+                        });
+                        showToast(`Order #${order.id} cancelled`);
+                        loadOrders();
+                    } catch (err) {
+                        showToast(err.message);
+                    }
+                });
+                row.appendChild(document.createElement("br"));
+                row.appendChild(cancelBtn);
+            }
+
+            if (order.status === "READY") {
+                const receivedBtn = document.createElement("button");
+                receivedBtn.textContent = "Mark as Received";
+                receivedBtn.addEventListener("click", async () => {
+                    try {
+                        await api(`/api/orders/${order.id}/receive`, {
+                            method: "PUT"
+                        });
+                        showToast(`Order #${order.id} marked as received`);
+                        loadOrders();
+                    } catch (err) {
+                        showToast(err.message);
+                    }
+                });
+                row.appendChild(document.createElement("br"));
+                row.appendChild(receivedBtn);
+            }
+
             list.appendChild(row);
         });
 
